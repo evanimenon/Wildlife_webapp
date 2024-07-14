@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{{ category_name }} Images</title>
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>{{ category_name }} Images</h1>
+    <div class="row">
+      {% for image in images %}
+        <div class="col-md-3">
+          <div class="card mb-3">
+            <img src="{{ url_for('serve_image', file_id=image._id) }}" class="card-img-top">
+            <div class="card-body">
+              <p class="card-text">{{ image.filename }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

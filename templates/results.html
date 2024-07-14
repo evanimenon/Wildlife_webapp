@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Download Images by Category</h1>
+    <div class="list-group mt-4">
+        {% for category in categories %}
+            <a href="{{ url_for('download_category', category=category) }}" class="list-group-item list-group-item-action">
+                Download {{ category }} Images
+            </a>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
