@@ -32,7 +32,7 @@ def run(
         conf_thres=0.001,
         iou_thres=0.6,
         max_det=1000,
-        device='',
+        device='0' if torch.cuda.is_available() else 'cpu',
         view_img=False,
         save_txt=True,
         save_conf=True,
@@ -53,6 +53,9 @@ def run(
         mongodb_uri='mongodb+srv://kushiluv:kushiluv25@cluster0.pety1ki.mongodb.net/',
         file_ids='6693c174da65f3418db3c749'
 ):
+    for i in range(torch.cuda.device_count()):
+        print("in")
+        print(torch.cuda.get_device_name(i))
     if not mongodb_uri:
         raise ValueError("MongoDB URI must be provided")
     if not file_ids:
@@ -164,7 +167,7 @@ if __name__ == "__main__":
     conf_thres = 0.001
     iou_thres = 0.6
     max_det = 1000
-    device = ''
+    device = '0' if torch.cuda.is_available() else 'cpu'
     view_img = False
     save_txt = True
     save_conf = True

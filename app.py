@@ -1,13 +1,14 @@
 import os
 import io
+import zipfile
 from flask import Flask, request, render_template, jsonify, send_file, abort, redirect, url_for
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import gridfs
-import zipfile
 from detect import run
-from bson.objectid import ObjectId
+import torch
+
 # MongoDB connection string
 uri = "mongodb+srv://kushiluv:kushiluv25@cluster0.pety1ki.mongodb.net/"
 client = MongoClient(uri)
@@ -53,7 +54,7 @@ def upload_file():
             conf_thres=0.001,
             iou_thres=0.6,
             max_det=1000,
-            device='',
+            device='0' if torch.cuda.is_available() else 'cpu',
             view_img=False,
             save_txt=True,
             save_conf=True,
@@ -77,28 +78,39 @@ def upload_file():
         
         return redirect(url_for('results'))
 
-    return render_template('upload.html')
+    categories = db['CategorizedImages'].distinct('category')
+    categorized_images = {}
+    for category in categories:
+        images = db['CategorizedImages'].find({'category': category})
+        categorized_images[category] = images
+    return render_template('results.html', categories=categories, categorized_images=categorized_images)
 
 @app.route('/results', methods=['GET'])
 def results():
     categories = db['CategorizedImages'].distinct('category')
-    return render_template('results.html', categories=categories)
+    categorized_images = {}
+    for category in categories:
+        images = db['CategorizedImages'].find({'category': category})
+        categorized_images[category] = images
+    return render_template('results.html', categories=categories, categorized_images=categorized_images)
 
-@app.route('/download/<category>', methods=['GET'])
-def download_category(category):
-    images = db['CategorizedImages'].find({'category': category})
+@app.route('/download', methods=['GET'])
+def download_all():
+    categories = db['CategorizedImages'].distinct('category')
     zip_buffer = io.BytesIO()
 
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for image in images:
-            file_id = image['file_id']
-            image_doc = fs.get(ObjectId(file_id))
-            image_name = image_doc.filename
-            zf.writestr(image_name, image_doc.read())
+        for category in categories:
+            images = db['CategorizedImages'].find({'category': category})
+            for image in images:
+                file_id = image['file_id']
+                image_doc = fs.get(ObjectId(file_id))
+                image_name = os.path.join(category, image_doc.filename)
+                zf.writestr(image_name, image_doc.read())
     
     zip_buffer.seek(0)
     
-    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name=f'{category}.zip')
+    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name='categorized_images.zip')
 
 @app.route('/image/<id>', methods=['GET'])
 def display_image(id):
