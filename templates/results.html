@@ -3,153 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaTRAT Results</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="shortcut icon" href="/static/wii.png" type="image/x-icon">
+    <title>CaTRAT</title>
+    <!--<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="/static/style.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #ffffff;
-            font-family: Arial, sans-serif;
-        }
-        .navbar {
-            background-color: #ffffff;
-            z-index: 1000;
-        }
-        .navbar-brand img {
-            height: 50px;
-        }
-        .navbar-nav .nav-item {
-            margin-left: 20px;
-        }
-        .container-main {
-            margin-top: 40px;
-            margin-left: 320px;
-        }
-        .portfolio-filter {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .portfolio-filter button {
-            background: none;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #343a40;
-        }
-        .portfolio-filter button.active, .portfolio-filter button:hover {
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-        }
-        .portfolio-block {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .portfolio-block img {
-            width: 100%;
-            transition: transform 0.2s;
-        }
-        .portfolio-block:hover img {
-            transform: scale(1.05);
-        }
-        .caption {
-            display: none;
-        }
         .sidebar {
             position: fixed;
-            top: 80px;
-            left: 0;
+            top: 60px;
+            right: 0;
             width: 300px;
-            height: calc(100% - 80px);
             padding: 20px;
-            background-color: #f8f9fa;
-            border-right: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 500;
+            border-left: 10px solid #000E22;
+            height: calc(100% - 60px);
+            overflow-y: auto;
         }
-        .sidebar .form-group,
-        .sidebar button {
+        .container-main {
+            margin-right: 360px; 
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        .thumbnail {
+            max-width: 100px;
+            max-height: 100px;
+            margin: 10px; 
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+            gap: 30px; 
+        }
+
+        /* Upload Section */
+        .upload {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--first-color);
+        }
+
+        .upload__container {
             width: 100%;
+            max-width: 1200px;
+            padding: 20px;
         }
-        .sidebar a {
-            margin-top: 20px;
+
+        .upload__content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .upload__header {
+            margin-bottom: 2rem;
+        }
+
+        .upload__header h2 {
+            color: var(--white-color);
+            font-size: var(--h2-font-size);
+            margin-bottom: 1rem;
+        }
+
+        .upload__file-button {
+            width: 200px; 
+            color: var(--white-color);
+            padding: 0.5rem 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: var(--normal-font-size);
+            transition: background-color 0.3s;
+        }
+
+        .upload__file-button:hover {
+            background-color: #182a32;
+        }
+
+        .upload__buttons {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .upload__button {
+            width: 100%; 
+            padding: 0.5rem 1rem;
+            font-size: var(--normal-font-size);
+            font-weight: var(--font-medium);
+            color: var(--white-color);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            box-sizing: border-box; 
+        }
+
+        .upload__button#ub {
+            background-color: #345B6B;
+            transition: var(--first-color) 0.3s;
+        }
+
+        .upload__button#up {
+            background-color: #345B6B;
+            transition: var(--first-color) 0.3s;
+        }
+
+        .upload__button#ud {
+            background-color: #73b758;
+            transition: var(--first-color) 0.3s;
+            text-decoration: none;
+            display: inline-block; 
+        }
+
+        .upload__button#ub:hover,
+        .upload__button#up:hover {
+            background-color: #182a32; 
+        }
+
+        .upload__button#ud:hover {
+            background-color: #436834;
+        }
+
+        /* Adjustments for text and button */
+        .upload__file-label {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <img src="/static/WII_logo.jpg" alt="WII Logo">
-            CaTRAT
+
+<header class="header" id="header">
+    <nav class="nav container">
+        <a href="#" class="nav__logo">
+            <img src="/static/wiiw.png" alt="Logo" class="nav__logo-image">
+            <span class="nav__logo-name">CaTRAT</span>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <div class="nav__menu" id="nav-menu">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a href="#home" class="nav__link">HOME</a>
+                </li>
+                <li class="nav__item">
+                    <a href="#about" class="nav__link">ABOUT</a>
+                </li>
+                <li class="nav__item">
+                    <a href="#contact" class="nav__link">CONTACT</a>
+                </li>
+                <li class="nav__item">
+                    <img src="/static/IIITD.png" alt="Logo" class="nav__link-image">
                 </li>
             </ul>
-            <span class="navbar-text">
-                <img src="/static/IIITD_logo.jpg" alt="IIITD Logo" style="height: 50px;">
-            </span>
         </div>
     </nav>
+</header>
 
-    <div class="sidebar">
-        <form method="post" enctype="multipart/form-data" action="/">
-            <div class="form-group">
-                <label for="fileUpload">Upload Images</label>
-                <input type="file" class="form-control-file" id="fileUpload" name="file" multiple>
+<div class="container-main">
+    <div class="image-grid mt-5">
+        {% for image in images %}
+            <div class="col-md-2">
+                <img src="{{ url_for('static', filename='uploads/' ~ image) }}" class="img-thumbnail thumbnail">
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-2" id="uploadButton">Upload</button>
-        </form>
-        <a href="/download" class="btn btn-success btn-block mt-2" id="downloadButton">Download All</a>
+        {% endfor %}
     </div>
+</div>
 
-    <div class="container container-main">
-        <div class="portfolio-filter">
-            <button type="button" data-filter="all" class="active">Show All</button>
-            {% for category in categories %}
-                <button type="button" data-filter="{{ category }}">{{ category }}</button>
-            {% endfor %}
+<div class="sidebar">
+    <form method="post" enctype="multipart/form-data" action="/">
+        <div class="form-group upload__content">
+            <label for="fileUpload" class="upload__file-label">Upload Images</label>
+            <input type="file" class="form-control-file upload__file-button" id="fileUpload" name="file" multiple>
         </div>
-        <div class="row filtr-container">
-            {% for category, images in categorized_images.items() %}
-                {% for image in images %}
-                    <div class="col-md-3 col-sm-6 col-xs-6 filtr-item" data-category="{{ category }}">
-                        <div class="portfolio-block">
-                            <img class="img-fluid" src="{{ url_for('display_image', id=image['file_id']) }}" alt="">
-                            <div class="caption">
-                                <h4>{{ category }}</h4>
-                            </div>
+        <div class="upload__buttons">
+            <button type="submit" class="upload__button" id="ub">Upload</button>
+            <button class="upload__button" id="up">Process</button>
+            <a href="/download" class="upload__button" id="ud">Download</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.portfolio-filter button').on('click', function () {
+            var category = $(this).attr('data-filter');
+
+            $('.portfolio-filter button').removeClass('active');
+            $(this).addClass('active');
+
+            if (category == 'all') {
+                $('.filtr-item').show();
+            } else {
+                $('.filtr-item').hide();
+                $('.filtr-item[data-category="' + category + '"]').show();
+            }
+        });
+    });
+</script>
+
+<div class="container container-main">
+    <div class="portfolio-filter">
+        <button type="button" data-filter="all" class="active">Show All</button>
+        {% for category in categories %}
+            <button type="button" data-filter="{{ category }}">{{ category }}</button>
+        {% endfor %}
+    </div>
+    <div class="row filtr-container">
+        {% for category, images in categorized_images.items() %}
+            {% for image in images %}
+                <div class="col-md-3 col-sm-6 col-xs-6 filtr-item" data-category="{{ category }}">
+                    <div class="portfolio-block">
+                        <img class="img-fluid" src="{{ url_for('display_image', id=image['file_id']) }}" alt="">
+                        <div class="caption">
+                            <h4>{{ category }}</h4>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
             {% endfor %}
-        </div>
+        {% endfor %}
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('.portfolio-filter button').on('click', function () {
-                var category = $(this).attr('data-filter');
-
-                $('.portfolio-filter button').removeClass('active');
-                $(this).addClass('active');
-
-                if (category == 'all') {
-                    $('.filtr-item').show();
-                } else {
-                    $('.filtr-item').hide();
-                    $('.filtr-item[data-category="' + category + '"]').show();
-                }
-            });
-        });
-    </script>
 </body>
 </html>
